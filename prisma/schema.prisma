@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  image       String?
+  published   Boolean  @default(false)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  tags        String?
+  metaTitle   String?
+  metaDesc    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  posts Post[]
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String
+  icon        String?
+  image       String?
+  features    String?
+  metaTitle   String?
+  metaDesc    String?
+  order       Int     @default(0)
+  active      Boolean @default(true)
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  image       String?
+  url         String?
+  technologies String?
+  category    String?
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model SEO {
+  id          String @id @default(cuid())
+  page        String @unique
+  title       String
+  description String
+  keywords    String?
+  ogImage     String?
+}
+
+model Settings {
+  id            String @id @default(cuid())
+  siteName      String @default("MLHK Infotech")
+  siteTagline   String @default("Innovative Tech Solutions")
+  email         String @default("info@mlhkinfotech.com")
+  phone         String @default("+91-XXXXXXXXXX")
+  address       String @default("Shajapur, Madhya Pradesh, India")
+  logo          String?
+  favicon       String?
+  socialLinks   String?
+  analytics     String?
+  footerText    String?
+}
